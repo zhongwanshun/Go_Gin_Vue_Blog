@@ -11,9 +11,10 @@ import (
 )
 
 //用户模型
-
+//查询用户是否存在
 //添加用户
 func AddUser(c *gin.Context) {
+	//todo 添加用户
 	var data model.User
 	var msg string
 	var validCode int
@@ -30,12 +31,13 @@ func AddUser(c *gin.Context) {
 		c.Abort()
 		return
 	}
-
+	//说明成功
 	code := model.CheckUser(data.Username)
 	if code == errmsg.SUCCSE {
+		//写入数据库
 		model.CreateUser(&data)
 	}
-
+	//返回一个JSON，返回网络是否通
 	c.JSON(
 		http.StatusOK, gin.H{
 			"status":  code,

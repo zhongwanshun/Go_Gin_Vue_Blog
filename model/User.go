@@ -18,13 +18,17 @@ type User struct {
 
 //写数据库操作的方法
 
-// CheckUser 查询用户是否存在
+// 2.CheckUser 查询用户是否存在
 func CheckUser(name string) (code int) {
+	//将User引入
 	var user User
+	//查询JVM文档进一步了解:从user库中查
 	db.Select("id").Where("username = ?", name).First(&user)
 	if user.ID > 0 {
+		//有记录:用户已经存在
 		return errmsg.ERROR_USERNAME_USED //1001
 	}
+	//可用
 	return errmsg.SUCCSE
 }
 
@@ -41,14 +45,15 @@ func CheckUpUser(id int, name string) (code int) {
 	return errmsg.SUCCSE
 }
 
-// CreateUser 新增用户
+// 1.CreateUser 新增用户
 func CreateUser(data *User) int {
 	//data.Password = ScryptPw(data.Password)
+	//返回的是db模型
 	err := db.Create(&data).Error
 	if err != nil {
 		return errmsg.ERROR // 500
 	}
-	return errmsg.SUCCSE
+	return errmsg.SUCCSE //200
 }
 
 // GetUser 查询用户
