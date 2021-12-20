@@ -3,8 +3,6 @@ package routes
 import (
 	"ZWS_Go/utils"
 
-	"net/http"
-
 	"github.com/gin-gonic/gin"
 )
 
@@ -14,13 +12,22 @@ func InitRouter() {
 	//r:=gin.New(),Default会默认添加两个中间件
 	r := gin.Default()
 	//初始化路由
-	router := r.Group("api/v1")
+	v1 := r.Group("api/v1")
 	{
-		router.GET("Hello", func(c *gin.Context) {
-			c.JSON(http.StatusOK, gin.H{
-				"msg": "ok",
-			})
-		})
+		//用户模块的路由接口
+
+		// 分类模块的路由接口
+
+		
+		//文章模块的路由接口
+
+		//这是一个测试接口
+		// router.GET("Hello", func(c *gin.Context) {
+		// 	c.JSON(http.StatusOK, gin.H{
+		// 		"msg": "ok",
+		// 	})
+		// })
+
 	}
 	r.Run(utils.HttpPort)
 }
