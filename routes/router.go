@@ -1,6 +1,7 @@
 package routes
 
 import (
+	v1 "ZWS_Go/api/v1"
 	"ZWS_Go/utils"
 
 	"github.com/gin-gonic/gin"
@@ -12,13 +13,12 @@ func InitRouter() {
 	//r:=gin.New(),Default会默认添加两个中间件
 	r := gin.Default()
 	//初始化路由
-	v1 := r.Group("api/v1")
+	router := r.Group("api/v1")
 	{
 		//用户模块的路由接口
-
+		router.POST("user/add", v1.AddUser)
 		// 分类模块的路由接口
 
-		
 		//文章模块的路由接口
 
 		//这是一个测试接口
