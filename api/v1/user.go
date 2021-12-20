@@ -1,6 +1,7 @@
 package v1
 
 import (
+	"ZWS_Go/model"
 	"ZWS_Go/utils/errmsg"
 	"net/http"
 	"strconv"
