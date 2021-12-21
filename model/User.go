@@ -91,12 +91,15 @@ func GetUsers(username string, pageSize int, pageNum int) ([]User, int64) {
 	return users, total
 }
 
-// EditUser 编辑用户信息
+// EditUser 编辑用户信息,和修改密码分开来做
 func EditUser(id int, data *User) int {
+	//初始化
 	var user User
+	//使用map传参
 	var maps = make(map[string]interface{})
 	maps["username"] = data.Username
-	maps["role"] = data.Role
+	maps["role"] = data.Role //角色
+	//密码就不要更新出来了，将user传入.
 	err = db.Model(&user).Where("id = ? ", id).Updates(maps).Error
 	if err != nil {
 		return errmsg.ERROR

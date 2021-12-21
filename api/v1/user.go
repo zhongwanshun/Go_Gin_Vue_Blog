@@ -19,7 +19,6 @@ func AddUser(c *gin.Context) {
 	var msg string
 	var validCode int
 	_ = c.ShouldBindJSON(&data)
-
 	msg, validCode = validator.Validate(&data)
 	if validCode != errmsg.SUCCSE {
 		c.JSON(
@@ -99,10 +98,12 @@ func GetUsers(c *gin.Context) {
 func EditUser(c *gin.Context) {
 	var data model.User
 	id, _ := strconv.Atoi(c.Param("id"))
+	//绑定
 	_ = c.ShouldBindJSON(&data)
-
+	//code 接收
 	code := model.CheckUpUser(id, data.Username)
 	if code == errmsg.SUCCSE {
+		//就执行更新用户
 		model.EditUser(id, &data)
 	}
 
