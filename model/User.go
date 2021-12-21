@@ -47,6 +47,7 @@ func CheckUpUser(id int, name string) (code int) {
 
 // 1.CreateUser 新增用户
 func CreateUser(data *User) int {
+	//创建用户的时候就进行哈希加密
 	//data.Password = ScryptPw(data.Password)
 	//返回的是db模型
 	err := db.Create(&data).Error
@@ -66,11 +67,11 @@ func GetUser(id int) (User, int) {
 	return user, errmsg.SUCCSE
 }
 
-// GetUsers 查询用户列表
+// GetUsers 查询用户列表（当前页数）,返回一个User 模型的切片
 func GetUsers(username string, pageSize int, pageNum int) ([]User, int64) {
-	var users []User
+	var users []User //切片
 	var total int64
-
+	//
 	if username != "" {
 		db.Select("id,username,role,created_at").Where(
 			"username LIKE ?", username+"%",
@@ -80,6 +81,7 @@ func GetUsers(username string, pageSize int, pageNum int) ([]User, int64) {
 		).Count(&total)
 		return users, total
 	}
+	//做一个分页,Limit分页,Offset偏移量（这是一个固定写法），去数据库中查找,传入地址
 	db.Select("id,username,role,created_at").Limit(pageSize).Offset((pageNum - 1) * pageSize).Find(&users)
 	db.Model(&users).Count(&total)
 
@@ -115,9 +117,11 @@ func ChangePassword(id int, data *User) int {
 	return errmsg.SUCCSE
 }
 
-// DeleteUser 删除用户
+// DeleteUser 删除用户,返回的是code
 func DeleteUser(id int) int {
+	//初始化
 	var user User
+	//调用()
 	err = db.Where("id = ? ", id).Delete(&user).Error
 	if err != nil {
 		return errmsg.ERROR
@@ -125,14 +129,16 @@ func DeleteUser(id int) int {
 	return errmsg.SUCCSE
 }
 
-// BeforeCreate 密码加密&权限控制
+// BeforeCreate 密码加密&权限控制(自己写方法或者使用BeforeSave)
 func (u *User) BeforeCreate(_ *gorm.DB) (err error) {
 	u.Password = ScryptPw(u.Password)
 	u.Role = 2
 	return nil
 }
 
+//修改之前
 func (u *User) BeforeUpdate(_ *gorm.DB) (err error) {
+
 	u.Password = ScryptPw(u.Password)
 	return nil
 }
@@ -140,12 +146,12 @@ func (u *User) BeforeUpdate(_ *gorm.DB) (err error) {
 // ScryptPw 生成密码
 func ScryptPw(password string) string {
 	const cost = 10
-
 	HashPw, err := bcrypt.GenerateFromPassword([]byte(password), cost)
 	if err != nil {
+		//存放在日志中
 		log.Fatal(err)
 	}
-
+	//
 	return string(HashPw)
 }
 
